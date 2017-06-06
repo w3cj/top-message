@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        font-family: monospace;
+        background: rgba(0, 0, 0, 0.9);
+        color: lime;
+        border-top: 20px solid red;
+        margin: 0px;
+        overflow: hidden;
+      }
+
+      .top-message {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 97vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+
+      .top-message::-webkit-scrollbar {
+        display:none;
+      }
+    </style>
+  </head>
+  <body style="-webkit-app-region: drag">
+    <div class="top-message" style="-webkit-app-region: no-drag;">
+      <span contentEditable>Top Message</span>
+    </div>
+  </body>
+
+  <script>
+    // You can also require other files to run in this process
+    require('./renderer.js')
+  </script>
+  <script type="text/javascript">
+    const $ = require('jquery');
+    $.fn.textfill = function(maxFontSize) {
+        maxFontSize = parseInt(maxFontSize, 10);
+        return this.each(function(){
+            var ourText = $("span", this),
+                parent = ourText.parent(),
+                maxHeight = parent.height(),
+                maxWidth = parent.width(),
+                fontSize = parseInt(ourText.css("fontSize"), 10),
+                multiplier = maxWidth/ourText.width(),
+                newSize = (fontSize*(multiplier-0.1));
+            ourText.css(
+                "fontSize",
+                (maxFontSize > 0 && newSize > maxFontSize) ?
+                    maxFontSize :
+                    newSize
+            );
+        });
+    };
+  const topMessage = $('.top-message');
+  topMessage.textfill();
+  topMessage.keyup(() => {
+    topMessage.find('span').css('font-size', '1em');
+    topMessage.textfill();
+  });
+  $(window).resize(() => topMessage.textfill());
+  </script>
+</html>
